@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#-*- coding: utf-8 -*-
+# coding: utf8
 
 import requests
 import sqlite3
@@ -9,81 +9,46 @@ import click
 import irma
 from bs4 import BeautifulSoup
 
-YEAR="2019"
-DB="res"+YEAR +".db"
-#Club for which results are collected
-CLUB = "Falken"
 base_url = "https://irma.suunnistusliitto.fi/irma/public/"
 
+pass_irma = click.make_pass_decorator(irma.Irma, ensure=False)
 
-
-def printCompetitions(db):
-    cursor = db.cursor()
-    cursor.execute('''SELECT id,name FROM competitions''')
-    rows = cursor.fetchall()
-    for r in rows:
-        print(str(r[0])),
-        print(" " + r[1])
-
-def printStarts(db):
-    cursor = db.cursor()
-    totalStarts=0
-    classes = dict()
-    cursor.execute('''SELECT class, competitors FROM compResults''')
-    rows = cursor.fetchall()
-    for r in rows:
-        try:
-            classes[r[0][:3]] += r[1]
-        except KeyError:
-            classes[r[0][:3]] = r[1]
-
-        totalStarts = totalStarts + r[1]
-    print("TotalStarts: " + str(totalStarts))
-    print("Class starts:")
-    print("<table>")
-    print("<tr>")
-    cells = 0
-    for k,v in sorted(classes.items()):
-        print("<td> " + k + " " + str(v) + " </td>")
-        if cells == 3:
-            print("</tr>")
-            print("<tr>")
-            cells=0
-        cells+=1
-    print("</tr>")
-    print("</table>")
 
 @click.group()
-def irmacli():
-    pass
+@click.pass_context
+@click.option("-y", "--year", default="2019")
+def irmacli(ctx, year):
+    db = irma.Irma(year)
+    ctx.obj = db
 
 @irmacli.command()
-def collect():
+@pass_irma
+def collect(ir):
     printNames = False
     totalStarts = 0
     stats = dict()
 
-    ids = getCompetitions(YEAR)
-    insertCompetitions(db, ids)
-    printCompetitions(db)
+    ids = ir.getCompetitions()
+    ir.insertCompetitions(ids)
+    ir.printCompetitions()
 
     for i in ids:
-        getCompetition(i)
+        ir.getCompetition(i)
 
 @irmacli.command()
-def printStats():
-    printStarts(db)
+@pass_irma
+def printStats(ir):
+    ir.printStarts()
 
 @irmacli.command()
-def printCompStats():
-    res = irma.getRegionalResults(db, "ÖID")
+@pass_irma
+def printCompStats(ir):
+    res = ir.getRegionalResults( "ÖID")
     print(res)
     print("FM")
-    res = irma.getRegionalResults(db, "SM-", notLike=("karsinta", "esikisa"), person=True, classNotLike="B")
+    res = ir.getRegionalResults( "SM-", notLike=("karsinta", "esikisa"), person=True, classNotLike="B")
     print(res)
     pass
 
 if __name__ == "__main__":
-    db = irma.openDb(DB)
     irmacli()
-    db.close()
