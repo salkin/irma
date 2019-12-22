@@ -1,0 +1,7 @@
+<!doctype html>
+<ul style="list-style-type:disc;">
+
+{% for runner in runners %}
+<li><a href="{{base_url}}/competitor?name={{ runner }}">{{ runner }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,10 @@
+Results: 
+<table border=1>
+  {% for comp, values in results.items() %}
+  <tr>
+    <td>
+      {{ comp }}</td><td>{{values.arrangingClub}}</td><td>{{ values.class }}</td><td> {{values.place}}
+    </td>
+  </tr>
+  {% endfor %}
+</table>

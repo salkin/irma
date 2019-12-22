@@ -1,0 +1,15 @@
+<table border=1>
+    <tr>
+    {% for class, starts in competition.items() %}
+    {% if loop.index % 4 == 0 %}
+    <tr>
+    {% endif %}
+      <td>
+        {{ class }}</td><td> {{ starts }}
+      </td>
+    {% if loop.index % 4 == 0 %}
+    </tr>
+    {% endif %}
+    {% endfor %}
+    </tr>
+</table>

@@ -7,10 +7,14 @@ import sys
 import urllib
 import click
 import irma
+import logging
+import os
 from bs4 import BeautifulSoup
+
 
 base_url = "https://irma.suunnistusliitto.fi/irma/public/"
 
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 pass_irma = click.make_pass_decorator(irma.Irma, ensure=False)
 
 
