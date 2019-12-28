@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js'></script>
+
+</head>
+<body>
+  Distrikt: FSO <br/>  
+  {% for c in clubs %}
+  <a href="{{base_url}}/?club={{ c.short }}">{{ c.name }}</a>
+  {% endfor %}
+
+  <p/>
+  <p/>
+  <p/>
+
+
+
+<canvas id="myChart" width="400" height="400"></canvas>
+<script>
+    
+    var ctx = document.getElementById('myChart');
+var myChart = new Chart(ctx, {
+      type: 'horizontalBar',
+  data: {
+            labels: [
+  {% for k in club_results %}
+              "{{ k.short }}",
+  {% endfor %}
+              ],
+    datasets: [{
+                  label: '# Löpare i föreningen',
+                  data: [
+
+  {% for k in club_results %}
+              "{{ k.runners | length }}",
+  {% endfor %}
+                  ],
+      backgroundColor: function(context) {
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+        return value > 5 ? 'red' :  // draw negative values in red
+          value > 2 ? 'blue' :    // else, alternate values in blue and green
+          'green';
+        
+      },
+      borderWidth: 1
+              
+    }]
+        
+  },
+  options: {
+    offset: true,
+    scales: {
+      xAxes: [{
+        ticks: {
+                min: 0,
+                stepSize: 1
+            }  
+      }]
+    }
+  }
+  
+});
+  </script>
+
+  
+
+
+</body>
+</html>

@@ -1,9 +1,128 @@
 <!doctype html>
+<html>
+<head>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js'></script>
 <title>Competitions</title>
-2018
-2017
-{% if name %}
-  <h1>Hello {{ name }}!</h1>
-{% else %}
-  <h1>Hello, World!</h1>
-{% endif %}
+</head>
+<body>
+  <b>{{ club }}</b>
+  <a href="{{ base_url }}/runners?club={{club}}">Löpare</a>
+  <p/>
+
+  <a href="{{ base_url }}/clubs">FSO föreningar</a>
+
+<div>
+<canvas id="myChart" width="400" 
+  {% if classes | length > 10 %}
+  height="400">
+  {% else %}
+  height="200">
+  {% endif %}
+</canvas>
+</div>
+  <script>
+    
+    var ctx = document.getElementById('myChart');
+var myChart = new Chart(ctx, {
+      type: 'horizontalBar',
+  data: {
+      
+    labels: [
+  				{% for class in sorted_classes %}
+           "{{ class }}",
+          {% endfor %}
+              ],
+    datasets: [{
+      maxBarThickness: "20",
+                  label: '# Starter i klass',
+                  data: [
+  					{% for class in sorted_classes %}
+               "{{ classes[class] }}",
+              {% endfor %}
+                  ],
+      backgroundColor: function(context) {
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+        return value > 40 ? 'rgba(255,99,132,0.2)' :  // draw negative values in red
+          value > 20 ? 'rgba(54, 162, 235, 0.2)':
+          value > 10 ? 'rgba(255, 206, 86, 0.2)':
+          value > 5 ? 'rgba(75, 192, 192, 0.2)':
+          'rgba(153, 102, 255, 0.2)';
+       
+      },
+      borderWidth: 1
+              
+    }]
+        
+  },
+  options: {
+    offset: true,
+    scales: {
+      xAxes: [{
+        ticks: {
+                min: 0,
+                stepSize: 1
+            }  
+      }]
+    }
+  }
+  
+});
+</script>
+<p/>
+ÖID starter totalt: {{ oid.total }}
+<div style="width:864px;"><div style="width:450px;">
+<canvas id="oid" width="400" height="200"></canvas>
+</div>
+</div>
+  <script>
+    
+    var ctx = document.getElementById('oid');
+var oid = new Chart(ctx, {
+   type: 'horizontalBar',
+   data: {
+            labels: [
+  					{% for place,amount in oid.results.items() %}
+           "{{ place }}",
+          {% endfor %}
+              ],
+    datasets: [{
+        label: '# ÖID medaljer',
+        barThickness: "10",
+        data: [
+  					{% for place,amount in oid.results.items() %}
+               "{{ amount }}",
+              {% endfor %}
+                  ],
+      backgroundColor: function(context) {
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+        return value > 10 ? 'red' :  // draw negative values in red
+          value > 5 ? 'blue' :    // else, alternate values in blue and green
+          'green';
+        
+      },
+      borderWidth: 1
+              
+    }]
+        
+  },
+  options: {
+    offset: true,
+    scales: {
+      xAxes: [{
+        ticks: {
+                min: 0,
+                stepSize: 1
+            }  
+      }]
+    }
+  }
+  
+});
+</script>
+
+
+</body>
+</html>
+

@@ -1,7 +1,76 @@
 <!doctype html>
-<ul style="list-style-type:disc;">
+<html>
+<head>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js'></script>
+</head>
+<body>
+  <b>{{ request.args.get('club')  }}</b>
 
-{% for runner in runners %}
-<li><a href="{{base_url}}/competitor?name={{ runner }}">{{ runner }}</a></li>
-{% endfor %}
-</ul>
+  <b>Löpare: </b>{{ runners | length }}</br>
+
+<select id="runner" onChange="loadRunner()">
+  <option value="lop">Välj löpare</option>
+  {% for runner in runners %}
+  <option value="{{ runner }}">{{ runner }}</option>
+  {% endfor %}
+</select>
+<script>
+function loadRunner() {
+  var x = document.getElementById("runner").value;
+   
+  window.location.assign("{{base_url}}/competitor?name=" + x);
+
+}
+</script>
+
+<canvas id="myChart" width="400" height="400"></canvas>
+  <script>
+    
+    var ctx = document.getElementById('myChart');
+var myChart = new Chart(ctx, {
+      type: 'horizontalBar',
+  data: {
+            labels: [
+          {% for k in sorted_class  %}
+           "{{ k }}",
+          {% endfor %}
+              ],
+    datasets: [{
+                  label: '# Löpare i klass',
+                  data: [
+            {% for k in sorted_class %}
+               "{{ classes[k].total }}",
+              {% endfor %}
+                  ],
+      backgroundColor: function(context) {
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+        return value > 20 ? 'rgba(255,99,132,0.2)' :  // draw negative values in red
+          value > 10 ? 'rgba(54, 162, 235, 0.2)':
+          value > 5 ? 'rgba(255, 206, 86, 0.2)':
+          value > 2 ? 'rgba(75, 192, 192, 0.2)':
+          'rgba(153, 102, 255, 0.2)';
+      },
+      borderWidth: 1
+              
+    }]
+        
+  },
+  options: {
+    offset: true,
+    scales: {
+      xAxes: [{
+        ticks: {
+                min: 0,
+                stepSize: 1
+            }  
+      }]
+    }
+  }
+  
+});
+  </script>
+
+
+</body>
+</html>
