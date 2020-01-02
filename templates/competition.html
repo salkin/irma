@@ -1,3 +1,19 @@
 <!doctype html>
+{% extends "base.html" %}
+{% block year %}
+{% endblock %}
 
-
+{% block content %}
+Results: <b>{{ request.args.get('name') }}</b> {{ request.args.get('year') }} 
+</p>
+<table border=1>
+  <tr><td>Placering</td><td>Deltagare</td></tr>
+  {% for val in results %}
+  <tr>
+    <td>{{val.place}}
+    </td><td><a href="competitor?name={{ val.name }}&year={{ request.args.get('year') }}">{{ val.name }}</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -15,6 +15,7 @@ class Irma:
 
     def __init__(self, year):
         dbFile=dbDir + "/res"+year +".db"
+        self.dbFile=dbFile
         self.openDb(dbFile)
         self.year = year
         self.club = "Falken"
@@ -116,8 +117,25 @@ class Irma:
             n = cursor.execute('''SELECT name,club FROM competitions WHERE compId=?''', (str(r[0]),))
             com = n.fetchone()
             if com != None:
-                results[com[0]] = {"class": r[2], "place": r[1], "arrangingClub": com[1]}
+                results[com[0]] = {"class": r[2], "place": r[1], "arrangingClub": com[1], "compId": r[0]}
+            m = cursor.execute('''SELECT COUNT(runner) FROM runnerResults WHERE compId=? AND class=?''', (str(r[0]), str(r[2]),))
+            tot = n.fetchone()
+            if tot != None:
+                results[com[0]]["total"] = tot[0]
         return results
+
+    def getCompetitionClass(self,compId, year, cl):
+        cursor = self.db.cursor()
+        results = list()
+        cursor.execute('''SELECT runner, place FROM runnerResults WHERE compId=? AND class=? ORDER BY place''', (compId,cl,))
+        rows = cursor.fetchall()
+        for r in rows:
+            results.append({"name": r[0], "place": r[1]})
+        return results
+
+
+
+
 
 
     def addCompetitior(self, id, sarja):
@@ -273,9 +291,10 @@ class Irma:
         return ids
 
 
-    def openDb(self, dbFile):
-        self.db = sqlite3.connect(dbFile)
-        cursor = self.db.cursor()
+    @staticmethod
+    def createDb(dbFile):
+        db = sqlite3.connect(dbFile)
+        cursor = db.cursor()
         try:
             cursor.execute('''
                            CREATE TABLE competitions(id INTEGER PRIMARY KEY, compId INTEGER, name TEXT, club TEXT, discipline TEXT)
@@ -289,6 +308,9 @@ class Irma:
             cursor.execute('''
                            CREATE TABLE clubs(id INTEGER PRIMARY KEY,  name TEXT, short TEXT, region TEXT)
                        ''')
-            self.db.commit()
+            db.commit()
         except sqlite3.OperationalError as e:
             log.info("DB exists" + str(e) )
+
+    def openDb(self, dbFile):
+        self.db = sqlite3.connect(dbFile)

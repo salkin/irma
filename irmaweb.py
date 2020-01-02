@@ -11,7 +11,7 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 app = Flask(__name__)
 
 @app.route('/')
-def clubstarts(name=None):
+def clubstarts():
     base_url = request.url_root
     year = request.args.get("year", default="2019")
     club = request.args.get("club", default="Falken")
@@ -24,13 +24,17 @@ def clubstarts(name=None):
                            classes=classes,
                            sorted_classes=sorted_classes,
                            oid=oid,
-                           club=club)
+                           club=club,
+                           year=year)
 
-@app.route('/competition/<year>')
+@app.route('/competition')
 def competition(year=None):
+    compId = request.args.get("compId", default="2019")
+    year = request.args.get("year")
+    cl = request.args.get("class")
     irm = Irma(year)
-    starts, classes = irm.getStarts()
-    return render_template("starts.html", competition=starts)
+    results = irm.getCompetitionClass(compId, year, cl)
+    return render_template("competition.html", results=results)
 
 @app.route('/district')
 def district(year=None):
@@ -55,26 +59,17 @@ def runners():
 @app.route('/competitor')
 def competitior():
     name = request.args.get("name")
+    year = request.args.get("year", default="2019")
     nam = urllib.parse.unquote(name)
-    irm = Irma("2019")
+    irm = Irma(year)
     res = irm.getRunnerResults(nam)
     return render_template("competitor_res.html", results=res)
 
 
-def fillDbs():
-    for i in range(2019, 2020):
-        irm = Irma(str(i))
-        ids = irm.getCompetitions()
-        irm.insertCompetitions(ids)
-        for j in ids:
-            irm.getCompetition(j)
-
 @app.route('/clubs')
 def fillClubs():
-    irm = Irma("2019")
-    #ids = irm.fetchClubs()
-    #for c in ids:
-    #    irm.insertClub(c)
+    year = request.args.get("year", default="2019")
+    irm = Irma(year)
     clubs = irm.getClubs()
     club_results=dict()
     for c in clubs:
@@ -90,5 +85,4 @@ def fillClubs():
 
 
 if __name__ == "__main__":
-    #fillDbs()
     app.run(host="0.0.0.0")

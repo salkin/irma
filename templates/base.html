@@ -1,0 +1,40 @@
+<html>
+<head>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js'></script>
+</head>
+<body>
+
+{% block year %}
+&Aring;r <select id="year" onChange="loadYear()">
+  <option value="lop">Välj</option>
+  {% for y in range(2012,2020) %}
+  <option value="{{ y }}">{{ y }}</option>
+  {% endfor %}
+</select>
+</p>
+
+<script>
+function loadYear() {
+  var club = "{{ request.args.get('club') }}";
+  var runner = "{{ request.args.get('name') }}";
+  var x = document.getElementById("year").value;
+  var url = window.location.href.split('?')[0];
+  var newUrl = url + "?year=" + x;
+  if (club != "None") {
+    console.error("Adding club");
+    newUrl += "&club=" + club;
+  } 
+  if (runner != "None") {
+    newUrl += "&name=" + runner;
+  }
+  window.location.assign(newUrl);
+}
+</script>
+{% endblock %}
+
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>

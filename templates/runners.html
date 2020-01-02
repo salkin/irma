@@ -1,10 +1,7 @@
-<!doctype html>
-<html>
-<head>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js'></script>
-</head>
-<body>
-  <b>{{ request.args.get('club')  }}</b>
+{% extends "base.html" %}
+
+{% block content %}
+<b>{{ request.args.get('club')  }}</b> {{ request.args.get('year') }} </p>
 
   <b>Löpare: </b>{{ runners | length }}</br>
 
@@ -18,7 +15,7 @@
 function loadRunner() {
   var x = document.getElementById("runner").value;
    
-  window.location.assign("{{base_url}}/competitor?name=" + x);
+  window.location.assign("{{base_url}}/competitor?year={{ request.args.get('year') }}&name=" + x);
 
 }
 </script>
@@ -71,6 +68,4 @@ var myChart = new Chart(ctx, {
 });
   </script>
 
-
-</body>
-</html>
+{% endblock %}
