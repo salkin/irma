@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block year %}
+{% endblock %}
+
+{% block content %}
+Starter: <b>{{ request.args.get('name') }}</b> 
+</p>
+
+<canvas id="stats" width="400" height="200">
+</canvas>
+</div>
+<script>
+    
+    var ctx = document.getElementById('stats');
+var myChart = new Chart(ctx, {
+      type: 'horizontalBar',
+  data: {
+      
+    labels: [
+  				{% for y, v in res.items() %}
+           "{{ y }}",
+          {% endfor %}
+              ],
+    datasets: [{
+      maxBarThickness: "20",
+                  label: '# Starter / År',
+                  data: [
+  					{% for y, v in res.items() %}
+               "{{ v | length }}",
+              {% endfor %}
+              ],
+      backgroundColor: function(context) {
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+        return value > 30 ? 'rgba(255,99,132,0.2)' :  // draw negative values in red
+          value > 15 ? 'rgba(54, 162, 235, 0.2)':
+          value > 10 ? 'rgba(255, 206, 86, 0.2)':
+          value > 5 ? 'rgba(75, 192, 192, 0.2)':
+          'rgba(153, 102, 255, 0.2)';
+      },
+      borderWidth: 1
+              
+    }]
+        
+  },
+  options: {
+    offset: true,
+    scales: {
+      xAxes: [{
+        ticks: {
+                min: 0,
+                stepSize: 1
+            }  
+      }]
+    }
+  }
+  
+});
+</script>
+
+
+{% endblock %}

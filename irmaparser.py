@@ -6,7 +6,7 @@ import sqlite3
 import sys
 import urllib
 import click
-import irma
+from src.irma import Irma
 import logging
 import os
 from bs4 import BeautifulSoup
@@ -15,14 +15,14 @@ from bs4 import BeautifulSoup
 base_url = "https://irma.suunnistusliitto.fi/irma/public/"
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
-pass_irma = click.make_pass_decorator(irma.Irma, ensure=False)
+pass_irma = click.make_pass_decorator(Irma, ensure=False)
 
 
 @click.group()
 @click.pass_context
-@click.option("-y", "--year", default="2019")
+@click.option("-y", "--year", default="2020")
 def irmacli(ctx, year):
-    db = irma.Irma(year)
+    db = Irma(year)
     ctx.obj = db
 
 @irmacli.command()
@@ -34,7 +34,6 @@ def collect(ir):
 
     ids = ir.getCompetitions()
     ir.insertCompetitions(ids)
-    ir.printCompetitions()
 
     for i in ids:
         ir.getCompetition(i)
@@ -43,6 +42,13 @@ def collect(ir):
 @pass_irma
 def printStats(ir):
     ir.printStarts()
+
+
+@irmacli.command()
+@pass_irma
+def collectClubs(ir):
+    Irma.createDb()
+    ir.fetchClubs()
 
 @irmacli.command()
 @pass_irma

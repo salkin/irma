@@ -1,0 +1,12 @@
+Results: <b>{{ request.args.get('name') }}</b> {{ request.args.get('year') }} 
+</p>
+<table border=1>
+  <tr><td>Tävling</td><td>Arrangör</td><td>Tävlingsklass</td><td>Placering</td><td>Deltagare</td></tr>
+  {% for comp, values in results.items() %}
+  <tr>
+    <td>
+      {{ comp }}</td><td>{{values.arrangingClub}}</td><td>{{ values.class }}</td><td> {{values.place}} </td><td> {{ values.total }}
+    </td>
+  </tr>
+  {% endfor %}
+</table>

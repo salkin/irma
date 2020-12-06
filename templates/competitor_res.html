@@ -2,7 +2,9 @@
 
 {% block content %}
 Results: <b>{{ request.args.get('name') }}</b> {{ request.args.get('year') }} 
-</p>
+<br/>
+<a href="/competitor_stat?name={{ request.args.get('name') }}">Summering</a>
+<p />
 <table border=1>
   <tr><td>Tävling</td><td>Arrangör</td><td>Tävlnigsklass</td><td>Placering</td><td>Deltagare</td></tr>
   {% for comp, values in results.items() %}

@@ -1,11 +1,7 @@
-<!doctype html>
-<html>
-<head>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js'></script>
-<title>Competitions</title>
-</head>
-<body>
-  <b>{{ club }}</b>
+{% extends "base.html" %}
+  
+{% block content %}
+<b>{{ club }}: {{ year }}</b>
   <a href="{{ base_url }}/runners?club={{club}}&year={{year}}">Löpare</a>
   <p/>
 
@@ -69,7 +65,7 @@ var myChart = new Chart(ctx, {
   
 });
 </script>
-<p/>
+<p></p>
 ÖID starter totalt: {{ oid.total }}
 <div style="width:864px;"><div style="width:450px;">
 <canvas id="oid" width="400" height="200"></canvas>
@@ -121,8 +117,6 @@ var oid = new Chart(ctx, {
   
 });
 </script>
+{% endblock %}
 
-
-</body>
-</html>
 

@@ -1,5 +1,14 @@
 <html>
 <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155562718-1"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-155562718-1');
+  </script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js'></script>
 </head>
 <body>
@@ -7,7 +16,7 @@
 {% block year %}
 &Aring;r <select id="year" onChange="loadYear()">
   <option value="lop">Välj</option>
-  {% for y in range(2012,2020) %}
+  {% for y in range(2012,maxYear) %}
   <option value="{{ y }}">{{ y }}</option>
   {% endfor %}
 </select>

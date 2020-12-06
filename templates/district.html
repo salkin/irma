@@ -10,9 +10,10 @@
   <p/>
   <p/>
 
-
-
+<div style="height:'400px';">
 <canvas id="myChart" width="400" height="400"></canvas>
+</div>  
+</p>
 <script>
     
     var ctx = document.getElementById('myChart');
@@ -59,6 +60,60 @@ var myChart = new Chart(ctx, {
   }
   
 });
+
+</script>
+Starter:
+<div height="400">
+<canvas id="starts" width="400" height="400"></canvas>
+</div>
+
+<script>
+//Starter totalt
+var startctx = document.getElementById('starts');
+var starts = new Chart(startctx, {
+      type: 'horizontalBar',
+  data: {
+    labels: [
+  {% for k in club_starts %}
+      "{{ k.short }}",
+  {% endfor %}
+    ],
+    datasets: [{
+        label: '# Starter i föreningen',
+        data: [
+        {% for k in club_starts %}
+          "{{ k.starts }}",
+        {% endfor %}
+        ],
+      backgroundColor: function(context) {
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+        return value > 400 ? 'rgba(255,99,132,0.2)' :  // draw negative values in red
+          value > 200 ? 'rgba(54, 162, 235, 0.2)':
+          value > 50 ? 'rgba(255, 206, 86, 0.2)':
+          value > 5 ? 'rgba(75, 192, 192, 0.2)':
+          'rgba(153, 102, 255, 0.2)';
+      },
+      borderWidth: 1
+              
+    }]
+        
+  },
+  options: {
+    offset: true,
+    scales: {
+      xAxes: [{
+        ticks: {
+                min: 0,
+                stepSize: 1
+            }  
+      }]
+    }
+  }
+  
+});
+
+
   </script>
 
 {% endblock %}  

@@ -7,12 +7,13 @@
 Results: <b>{{ request.args.get('name') }}</b> {{ request.args.get('year') }} 
 </p>
 <table border=1>
-  <tr><td>Placering</td><td>Deltagare</td></tr>
+  <tr><td>Placering</td><td>Deltagare</td><td>Tid</td></tr>
   {% for val in results %}
   <tr>
     <td>{{val.place}}
     </td><td><a href="competitor?name={{ val.name }}&year={{ request.args.get('year') }}">{{ val.name }}</a>
     </td>
+    <td>{{ val.compTime }}</td>
   </tr>
   {% endfor %}
 </table>
